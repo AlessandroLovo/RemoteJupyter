@@ -1,9 +1,13 @@
 #!/bin/bash
 
-filename="$HOME/.jnr_status.txt"
-tmp_filename="$HOME/.jnr_status.tmp"
+filename="$HOME/.jnr/status.txt"
+tmp_filename="$HOME/.jnr/status.tmp"
+tmp_filename1="$HOME/.jnr/tmp1.tmp"
+tmp_filename2="$HOME/.jnr/tmp2.tmp"
+
 have_to_kill=false
 have_to_spawn=true
+refresh=false
 
 port=false
 hostname=false
@@ -23,17 +27,21 @@ if [[ $# -eq 0 ]] ; then
 	echo "To kill a process:"
 	echo "    jnr -kh <hostname> or jnr -kp <port>"
 	echo "To view the list of running processes:"
-	echo "    jnr -v all/last/first"
+	echo "    jnr -v"
+	echo "To refresh [and view] the list of processes (in case some died on their own):"
+	echo "    jnr -r[v]"
 	echo "================================================"
     exit 0
 fi
 
 # parse arguments
-while getopts ":kh:p:v:" opt; do
+while getopts ":kh:p:vr" opt; do
   	case $opt in
-    	v) show_what="$OPTARG"
+    	v) # show_what="$OPTARG"
     	show_list=true
 		have_to_spawn=false
+		;;
+		r) refresh=true
     	;;
     	k) have_to_kill=true
     	have_to_spawn=false
@@ -51,12 +59,45 @@ while getopts ":kh:p:v:" opt; do
   	esac
 done
 
+# refresh
+if [[ "$refresh" == true ]] ; then
+	while IFS='' read -r line ; do
+    	IFS=' ' read _port _pid _hostname <<< "$line"
+		remove=false
+
+		if [[ "$_port" != "port" ]] ; then
+			ps ax | grep "ssh -NfL localhost:$_port:" > "$tmp_filename1"
+			wc -l "$tmp_filename1" > "$tmp_filename2" # read lenght of file tmp_filename1
+			while IFS='' read -r line2 ; do
+				IFS=' ' read _linecount _rest <<< "$line2"
+			done < "$tmp_filename2"
+			rm "$tmp_filename1"
+			rm "$tmp_filename2"
+			if [[ $_linecount -le 1 ]] ; then # tmp_filename1 contains only one line: the port forwarding has died
+				remove=true
+			fi
+		fi
+
+		# remove the process
+		if [[ "$remove" == true ]] ; then
+			echo
+			echo "Removing dead process on port $_port: PID $_pid, Hostname: $_hostname"
+			echo
+		else
+			echo "$line" >> "$tmp_filename"
+		fi
+
+	done < "$filename"
+ 
+  	mv "$tmp_filename" "$filename"
+fi
+
 # show list of running processes
-if [ "$show_list" == true ] ; then
+if [[ "$show_list" == true ]] ; then
   	echo
 
 	# check if there are active processes
-	wc -l "$filename" > "$tmp_filename"
+	wc -l "$filename" > "$tmp_filename" # write to tmp_filename the length of filename
 	while IFS='' read -r line ; do
 		IFS=' ' read _linecount _rest <<< "$line"
 	done < "$tmp_filename"
@@ -67,23 +108,15 @@ if [ "$show_list" == true ] ; then
 		exit 0
 	fi
 
-	
-  	if [[ "$show_what" == f* ]] ; then
-    	head -n 2 "$filename"
-  	elif [[ "$show_what" == l* ]] ; then
-    	head -n 1 "$filename"
-    	tail -n 1 "$filename"
-  	else
-    	while IFS='' read -r line ; do
-        	echo $line
-    	done < "$filename"
-  	fi
+	while IFS='' read -r line ; do
+		echo $line
+	done < "$filename"
   	echo
 	exit 0
 fi
 
 # kill port forwarding process
-if [ "$have_to_kill" == true ] ; then
+if [[ "$have_to_kill" == true ]] ; then
   	rm -f "$tmp_filename"
   	nothing_to_kill=true
  
@@ -135,6 +168,7 @@ if [ "$have_to_kill" == true ] ; then
 	exit 0
 fi
  
+# spawn a port forwarding and connect to the host
 if [[ "$have_to_spawn" == true && "$port" != false ]] ; then
   	# check if port or hostname are already busy
   	while IFS='' read -r line ; do
@@ -156,7 +190,7 @@ if [[ "$have_to_spawn" == true && "$port" != false ]] ; then
   	ssh -NfL localhost:$port:localhost:$port $hostname
  
  	# get process PID and write to file
-	ps ax | grep localhost:$port | head -n 1 > "$tmp_filename"
+	ps ax | grep "ssh -NfL localhost:$port:" | head -n 1 > "$tmp_filename"
 	while IFS='' read -r line ; do
 		IFS=' ' read _pid _rest <<< "$line"
 	done < "$tmp_filename"
