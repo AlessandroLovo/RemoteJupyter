@@ -1,9 +1,10 @@
 #!/bin/bash
 
-filename="$HOME/.jnr/status.txt"
-tmp_filename="$HOME/.jnr/status.tmp"
-tmp_filename1="$HOME/.jnr/tmp1.tmp"
-tmp_filename2="$HOME/.jnr/tmp2.tmp"
+jnr_path="$HOME/.RemoteJupyter"
+filename="$jnr_path/status.txt"
+tmp_filename="$jnr_path/status.tmp"
+tmp_filename1="$jnr_path/tmp1.tmp"
+tmp_filename2="$jnr_path/tmp2.tmp"
 
 have_to_kill=false
 have_to_spawn=true
@@ -21,15 +22,22 @@ fi
 # check if there are arguments
 if [[ $# -eq 0 ]] ; then
 	have_to_spawn=false
+
+	# retrieve alias from setup file
+	while IFS='' read -r line ; do
+		IFS='~' read jnr_alias _rest <<< "$line"
+	done < "$jnr_path/setup.txt"
+
 	echo "================================================"
-    echo "Usage: to spawn a new process:"
-	echo "    jnr -h <hostname> [-p <port> (default 8888)]"
+    echo "Usage:"
+	echo "To spawn a new process:"
+	echo "    $jnr_alias -h <hostname> [-p <port> (default 8888)]"
 	echo "To kill a process:"
-	echo "    jnr -kh <hostname> or jnr -kp <port>"
+	echo "    $jnr_alias -kh <hostname> or $jnr_alias -kp <port>"
 	echo "To view the list of running processes:"
-	echo "    jnr -v"
+	echo "    $jnr_alias -v"
 	echo "To refresh [and view] the list of processes (in case some died on their own):"
-	echo "    jnr -r[v]"
+	echo "    $jnr_alias -r[v]"
 	echo "================================================"
     exit 0
 fi
