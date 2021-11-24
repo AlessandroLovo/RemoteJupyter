@@ -73,6 +73,9 @@ cp jnr.sh "$jnr_path"
 # allow jnr.sh to be executed
 chmod u+x "$jnr_path/jnr.sh"
 
+# make a copy of the original rc file
+cp "$rc_file" "$rc_file.pre_jnr"
+
 # create alias in rc file
 echo >> "$rc_file"
 echo "# >> RemoteJupyter" >> "$rc_file"
