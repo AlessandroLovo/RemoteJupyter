@@ -39,6 +39,22 @@ if [[ $# -eq 0 ]] ; then
 	echo "To refresh [and view] the list of processes (in case some died on their own):"
 	echo "    $jnr_alias -r[v]"
 	echo "================================================"
+	echo
+	echo "-------------------"
+	echo "General Wrokflow:"
+	echo "1. (local machine): spawn a new process as shown above"
+	echo "2. The terminal automatically moves to the remote machine"
+	echo "3. (remote machine): start a jupyter notebook or lab with the aliases you set up when configuring RemoteJupyter on the remote machine"
+	echo "  for example with" 
+	echo "    jnr 8888"
+	echo "  which launches a jupyter notebook on port 8888"
+	echo "4. (remote machine): copy the url that contains 'localhost'"
+	echo "5. (local machine): open a browser and paste the url"
+	echo "6. Do your work"
+	echo "7. (remote machine): Stop the notebook/lab by double tapping ctrl-c"
+	echo "[8. (remote machine): exit]"
+	echo "9. (local machine): kill the port forwarding process as shown above"
+	echo "-------------------"
     exit 0
 fi
 

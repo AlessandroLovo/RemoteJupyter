@@ -89,5 +89,8 @@ echo "to start using."
 echo "To obtain instruction on how to use, just type"
 echo "   $jnr_alias"
 echo 
+echo "Run"
+echo "    source setup_remote.sh"
+echo "to setup the aliases also in the remote machine"
 
 return 0
