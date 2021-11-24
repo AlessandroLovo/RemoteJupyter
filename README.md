@@ -1,8 +1,8 @@
 # RemoteJupyter
 Utility to run a Jupyter notebook/lab over ssh
 
-# Installation
-1. Download/clone the repository and go to your the folder
+# Installation (Linux and macOS)
+1. Download/clone the repository and open a terminal folder
 2. Run
 ```source setup_local.sh```
 3. Run ```source setup_remote.sh [user@]host```
