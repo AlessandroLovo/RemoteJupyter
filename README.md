@@ -32,10 +32,10 @@ Assuming your alias for RemoteJupyter is `jnr` (default),
 1. (local machine): spawn a new process as shown above
 2. The terminal automatically moves to the remote machine
 3. (remote machine): start a jupyter notebook or lab with the aliases you set up when configuring RemoteJupyter on the remote machine for example with
-	```jnr 8888``` which launches a jupyter notebook on port 8888"
+	```jlr 8888``` which launches a jupyter lab on port 8888"
 4. (remote machine): copy the url that contains 'localhost'
 5. (local machine): open a browser and paste the url
-6. Do your work
+6. ...Do your work...
 7. (remote machine): Stop the notebook/lab by double tapping `ctrl-c`
 8. optional (remote machine): exit
 9. (local machine): kill the port forwarding process as shown above
