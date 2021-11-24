@@ -83,7 +83,9 @@ echo >> "$rc_file"
 # Tell the user how to proceed
 echo
 echo "RemoteJupyter successfully setup with alias $jnr_alias"
-echo "Restart the terminal to start using."
+echo "Restart the terminal or run"
+echo "    source $rc_file"
+echo "to start using."
 echo "To obtain instruction on how to use, just type"
 echo "   $jnr_alias"
 echo 
