@@ -39,7 +39,7 @@ if [[ -z "$jnr_alias" ]] ; then
 fi
 
 # check if there is already a setup file, which means we just need to update
-if [[ ! -f "$jnr_path/setup.txt" ]] ; then
+if [[ -f "$jnr_path/setup.txt" ]] ; then
     # check if given alias already exists
     if command -v "$jnr_alias" &> /dev/null ; then
         echo "command $jnr_alias is already in use"
@@ -63,7 +63,7 @@ case $SHELL in
 esac
 
 # create .RemoteJupyter folder if it doesn't exist
-if [[ ! -f "$jnr_path" ]] ; then
+if [[ ! -d "$jnr_path" ]] ; then
 	mkdir "$jnr_path"
 fi
 
@@ -117,11 +117,16 @@ echo "RemoteJupyter successfully setup with alias $jnr_alias"
 echo "Restart the terminal or run"
 echo "    source $rc_file"
 echo "to start using."
-echo "To obtain instruction on how to use, just type"
-echo "   $jnr_alias"
-echo 
-echo "Run"
-echo "    source setup_remote.sh"
-echo "to setup the aliases also in the remote machine"
+
+if [[ "$found" == false ]] ; then
+    echo "To obtain instruction on how to use, just type"
+    echo "   $jnr_alias"
+    echo
+    echo "Run"
+    echo "    source setup_remote.sh"
+    echo "to setup the aliases also in the remote machine"
+fi
+echo
+echo
 
 return 0
