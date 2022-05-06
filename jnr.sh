@@ -9,6 +9,7 @@ tmp_filename2="$jnr_path/tmp2.tmp"
 have_to_kill=false
 have_to_spawn=true
 refresh=false
+restore=false
 
 port=false
 hostname=false
@@ -59,13 +60,15 @@ if [[ $# -eq 0 ]] ; then
 fi
 
 # parse arguments
-while getopts ":kh:p:vr" opt; do
+while getopts ":kh:p:vrR" opt; do
   	case $opt in
     	v) # show_what="$OPTARG"
     	show_list=true
 		have_to_spawn=false
 		;;
 		r) refresh=true
+		;;
+		R) restore=true
     	;;
     	k) have_to_kill=true
     	have_to_spawn=false
@@ -106,6 +109,52 @@ if [[ "$refresh" == true ]] ; then
 		if [[ "$remove" == true ]] ; then
 			echo
 			echo "Removing dead process on port $_port: PID $_pid, Hostname: $_hostname"
+			echo
+		else
+			echo "$line" >> "$tmp_filename"
+		fi
+
+	done < "$filename"
+ 
+  	mv "$tmp_filename" "$filename"
+fi
+
+# restore dead process
+if [[ "$restore" == true ]] ; then
+	while IFS='' read -r line ; do
+    	IFS=' ' read _port _pid _hostname <<< "$line"
+		remove=false
+
+		if [[ "$_port" != "port" ]] ; then
+			ps ax | grep "ssh -NfL localhost:$_port:" > "$tmp_filename1"
+			wc -l "$tmp_filename1" > "$tmp_filename2" # read lenght of file tmp_filename1
+			while IFS='' read -r line2 ; do
+				IFS=' ' read _linecount _rest <<< "$line2"
+			done < "$tmp_filename2"
+			rm "$tmp_filename1"
+			rm "$tmp_filename2"
+			if [[ $_linecount -le 1 ]] ; then # tmp_filename1 contains only one line: the port forwarding has died
+				remove=true
+			fi
+		fi
+
+		# remove the process
+		if [[ "$remove" == true ]] ; then
+			echo
+			echo "Restoring dead process on port $_port: old PID $_pid, Hostname: $_hostname"
+
+			# spawn port forwarding and save its PID
+			ssh -NfL localhost:$_port:localhost:$_port $_hostname
+		
+			# get new process PID and write to file
+			ps ax | grep "ssh -NfL localhost:$_port:" | head -n 1 > "$tmp_filename1"
+			while IFS='' read -r line ; do
+				IFS=' ' read _pid _rest <<< "$line"
+			done < "$tmp_filename1"
+			echo "$_port $_pid $_hostname" >> "$tmp_filename"
+			rm "$tmp_filename1"
+
+			echo "New PID: $_pid"
 			echo
 		else
 			echo "$line" >> "$tmp_filename"
