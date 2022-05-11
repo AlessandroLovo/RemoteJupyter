@@ -39,8 +39,8 @@ if [[ -z "$jnr_alias" ]] ; then
 fi
 
 # check if there is already a setup file, which means we just need to update
-if [[ -f "$jnr_path/setup.txt" ]] ; then
-    # check if given alias already exists
+if [[ ! -f "$jnr_path/setup.txt" ]] ; then
+    # check if given alias already exists. TODO: iprove this block
     if command -v "$jnr_alias" &> /dev/null ; then
         echo "command $jnr_alias is already in use"
         echo "Please specify another alias for RemoteJupyter by running"
