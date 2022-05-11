@@ -121,6 +121,7 @@ fi
 
 # restore dead process
 if [[ "$restore" == true ]] ; then
+	count=0
 	while IFS='' read -r line ; do
     	IFS=' ' read _port _pid _hostname <<< "$line"
 		remove=false
@@ -140,6 +141,7 @@ if [[ "$restore" == true ]] ; then
 
 		# remove the process
 		if [[ "$remove" == true ]] ; then
+			count=$(( count + 1 ))
 			echo
 			echo "Restoring dead process on port $_port: old PID $_pid, Hostname: $_hostname"
 
@@ -163,6 +165,14 @@ if [[ "$restore" == true ]] ; then
 	done < "$filename"
  
   	mv "$tmp_filename" "$filename"
+
+	if [[ $count == 0 ]] ; then
+		echo
+		echo "No dead processes to restore"
+		echo
+	else
+		ssh $_hostname
+	fi
 fi
 
 # show list of running processes
