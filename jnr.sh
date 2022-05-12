@@ -171,6 +171,9 @@ if [[ "$restore" == true ]] ; then
 		echo "No dead processes to restore"
 		echo
 	else
+		echo
+		echo "Connecting to host $_hostname"
+		echo
 		ssh $_hostname
 	fi
 fi
