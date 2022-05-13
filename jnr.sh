@@ -39,6 +39,8 @@ if [[ $# -eq 0 ]] ; then
 	echo "    $jnr_alias -v"
 	echo "To refresh [and view] the list of processes (in case some died on their own):"
 	echo "    $jnr_alias -r[v]"
+	echo "To restore all dead processes:"
+	echo "	  $jnr_alias -R"
 	echo "================================================"
 	echo
 	echo "-------------------"

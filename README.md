@@ -26,6 +26,8 @@ Assuming your alias for RemoteJupyter is `jnr` (default),
     ```jnr -v```
 * To refresh \[and view\] the list of processes (in case some died on their own):
     ```jnr -r[v]```
+* To restore dead processes:
+    ```jnr -R```
     
 
 # General Workflow
