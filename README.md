@@ -2,11 +2,11 @@
 Utility to run a Jupyter notebook/lab over ssh
 
 # Installation (Linux and macOS)
-1. Download/clone the repository and open a terminal folder
+1. Download/clone the repository and open a terminal in the folder
 2. Run
 ```source setup_local.sh [-a <alias> (default jnr)]```
 3. Run ```source setup_remote.sh [user@]host```
-4. You will be ssh connected to your host and you will find the file jnr_setup_remote.sh in your home directory.
+4. You will be ssh connected to your host and you will find the file `jnr_setup_remote.sh` in your home directory.
 Run it with
 ```source jnr_setup_remote.sh [-l <jupyter-lab alias> (default jlr)] [-n <jupyter-notebook alias> (default jnr)]```
 which will setup the aliases to run jupyter notebook and lab remotely
