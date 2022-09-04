@@ -29,6 +29,12 @@ if [[ $# -eq 0 ]] ; then
 		IFS='~' read jnr_alias _rest <<< "$line"
 	done < "$jnr_path/setup.txt"
 
+	echo "****************************************************************"
+	echo "*                        Remote Jupyter                        *"
+	echo "*                                                              *"
+	echo "*     a helper to run jupyter notebooks and labs over ssh      *"
+	echo "*       https://github.com/AlessandroLovo/RemoteJupyter        *"
+	echo "****************************************************************"
 	echo "================================================"
     echo "Usage:"
 	echo "To spawn a new process:"

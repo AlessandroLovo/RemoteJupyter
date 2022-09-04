@@ -7,7 +7,7 @@
 # -----------------------------
 
 jnr_path="$HOME/.RemoteJupyter"
-version="0.3.3"
+version="1.0.0"
 
 usage () {
     echo "Usage"
